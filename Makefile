@@ -1,16 +1,14 @@
-#CPU_DIRS := 32bit 64bit
-
-#.PHONY: all clean $(CPU_DIRS)
-
 all: linux windows macos freebsd openbsd netbsd solaris arm5 arm6 arm7 arm8
 
 update:
 	go get -v -u github.com/elico/httpcache
 	go get -v -u github.com/cheggaaa/pb
+	go get -v -u github.com/elico/requeststore-v1
 clean:
 	echo "cleaning"
 	rm ./bin/*
 	rmdir ./bin
+	rm ms-updates-fetcher-helper.tar.xz
 linux:	
 	./build.sh "linux" "amd64"
 	./build.sh "linux" "386"
@@ -45,6 +43,3 @@ arm8:
 	./build.sh "linux" "arm64"
 pack:
 	./pack.sh
-#$(CPU_DIRS):
-#	        $(MAKE) -C $@ $(MAKECMDGOALS)
-

@@ -4,7 +4,7 @@
 #darwin_amd64  freebsd_amd64 linux_386     linux_arm     netbsd_amd64  obj           openbsd_amd64 tool          windows_amd64
 
 mkdir bin >/dev/null 2>&1
-export BINARY=ms-updates-fetcher-helper_
+export BINARY=`basename $PWD`_
 export GOOS=$1
 export GOARCH=$2
 export GOARM=$3

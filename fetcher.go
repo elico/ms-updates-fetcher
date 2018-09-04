@@ -1,51 +1,34 @@
 package main
 
 import (
-	"./requeststore"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+
 	//	"bytes"
 	//	"io"
 	"bufio"
 	"flag"
-	"github.com/cheggaaa/pb"
 	"strconv"
 	"strings"
+
+	"github.com/cheggaaa/pb"
+	"github.com/elico/requeststore-v1"
 )
 
-/*
-func headersToWriter(h http.Header, w io.Writer) error {
-        if err := h.Write(w); err != nil {
-                return err
-        }
-        // ReadMIMEHeader expects a trailing newline
-        _, err := w.Write([]byte("\r\n"))
-        return err
-}
-
-
-func requestStr(h http.Request) string {
-        hb := &bytes.Buffer{}
-        hb.Write([]byte(fmt.Sprintf("%s %s %s\r\n", h.Method, h.URL.String(), h.Proto)))
-        headersToWriter(h.Header, hb)
-
-        return hb.String()
-}
-*/
 const (
 	defaultDir = "./storedata"
 )
 
 var (
 	verbose bool
-	//retries      int
-	//hashSum      bool
-	//useDisk      bool
-	//private      bool
+	// retries      int
+	// hashSum      bool
+	// useDisk      bool
+	// private      bool
 	dir string
-	//dumpHttp bool
+	// dumpHttp bool
 	noprivate            bool
 	bypassprivateconfirm bool
 	requestdata          bool
@@ -61,8 +44,8 @@ func init() {
 
 }
 func main() {
-	//useDisk := true
-	//dir := "./storedata"
+	// useDisk := true
+	// dir := "./storedata"
 
 	var store requeststore.Store
 
@@ -76,28 +59,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	//storeQueue := requeststore.NewMemoryStore()
-
 	client := &http.Client{}
-	/*
-		req, _ = http.NewRequest("GET", reqUrl, nil)
-		req.Header.Add("User-Agent", "Microsoft BITS/7.8")
-		req.Header.Add("Cache-Control", "max-age=259200")
 
-		resp, err = client.Do(req)
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Println(resp)
-			fmt.Println(store.StoreResponse(requeststore.NewResponseFromHttp(resp, resp.Body), resp.Request.Method+":"+resp.Request.URL.String(), true))
-		}
-	*/
-
-	/*
-		stats, names := store.WalkRequests()
-		fmt.Println(names)
-		fmt.Println(stats)
-	*/
 	reader := bufio.NewReader(os.Stdin)
 
 	allRequests := store.RetrieveAllRequests()
@@ -129,7 +92,7 @@ func main() {
 				vfsResp, err := store.RetrieveResponseHeader(request.Method + ":" + request.URL.Scheme + "://" + "msupdates.ngtech.internal" + request.URL.Path)
 				if err == nil {
 					fmt.Println("found on disk", vfsResp)
-					//vfsResp.Close()
+					// vfsResp.Close()
 					continue
 				}
 			default:
@@ -153,8 +116,8 @@ func main() {
 						continue
 					case strings.Contains(strings.ToLower(resp.Header.Get("Cache-Control")), "must-revalidate"):
 						fmt.Println("Starting to store response, has a must-revalidate")
-						//resp.Body.Close()
-						//continue
+						// resp.Body.Close()
+						// continue
 					case strings.Contains(strings.ToLower(resp.Header.Get("Cache-Control")), "public"):
 						fmt.Println("Starting to store response, has a public Cache-Control")
 						//Ignore
@@ -178,7 +141,7 @@ func main() {
 						// create proxy reader
 						rd := bar.NewProxyReader(resp.Body)
 						// and copy from reader
-						//io.Copy(file, rd)
+						// io.Copy(file, rd)
 						storeResp = store.StoreResponse(requeststore.NewResponseFromHttp(resp, rd), resp.Request.Method+":"+resp.Request.URL.Scheme+"://"+"msupdates.ngtech.internal"+resp.Request.URL.Path, false)
 					} else {
 						storeResp = store.StoreResponse(requeststore.NewResponseFromHttp(resp, resp.Body), resp.Request.Method+":"+resp.Request.URL.Scheme+"://"+"msupdates.ngtech.internal"+resp.Request.URL.Path, false)
